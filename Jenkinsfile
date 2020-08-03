@@ -1,8 +1,8 @@
 pipeline{
     agent any
     tools{
-    maven 'maven-3.6.3'
-    jdk 'JDK8'
+        maven 'maven-3.6.3'
+        jdk 'JDK8'
     }
     stages{
         stage('Prepration'){
@@ -13,12 +13,18 @@ pipeline{
                 echo "M2_HOME = ${M2_HOME}"
                 """
             }
-            
         }
         stage('Build stage'){
             steps{
-                sh "pwd"
-                
+                sh 'mvn clean install'
+            }
+            post{
+                success{
+                    junit 'target/surefire-reports/**/*.xml'
+                }
+                always{
+                    cleanWs()
+                }
             }
         }
         stage('Test stage'){
